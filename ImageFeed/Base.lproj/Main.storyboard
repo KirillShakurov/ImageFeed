@@ -38,19 +38,24 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VSm-Ew-3z0" userLabel="Cell date">
-                                                    <rect key="frame" x="28" y="168" width="101.5" height="16"/>
+                                                    <rect key="frame" x="28" y="168" width="358" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" name="YP White "/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tH8-e8-V32">
-                                                    <rect key="frame" x="353.5" y="23" width="30" height="26"/>
+                                                    <rect key="frame" x="343.5" y="23" width="40" height="40"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="40" id="cPV-XU-95p"/>
+                                                        <constraint firstAttribute="width" constant="40" id="ifa-Dg-SPB"/>
+                                                    </constraints>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                    <state key="normal" image="Like_button_on"/>
+                                                    <state key="normal" image="like_button_on"/>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" name="YP Black"/>
                                             <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="VSm-Ew-3z0" secondAttribute="trailing" constant="8" id="Fvj-z8-8kN"/>
                                                 <constraint firstItem="rHT-bO-oZH" firstAttribute="leading" secondItem="88c-wG-6ao" secondAttribute="leadingMargin" id="Kse-Em-Y7n"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="rHT-bO-oZH" secondAttribute="bottom" id="WDk-GA-sKb"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="rHT-bO-oZH" secondAttribute="trailing" id="WrC-VL-zyH"/>
@@ -94,7 +99,7 @@
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
-        <image name="Like_button_on" width="30" height="26"/>
+        <image name="like_button_on" width="30" height="26"/>
         <namedColor name="YP Black">
             <color red="0.10199999809265137" green="0.10599999874830246" blue="0.13300000131130219" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

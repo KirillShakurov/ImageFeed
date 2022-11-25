@@ -9,12 +9,9 @@ import UIKit
 
 class ImagesListViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private var tableView: UITableView!
     
     private var photosName = [String]()
-    
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
        
@@ -35,15 +32,15 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) // 1
-            
-            guard let imageListCell = cell as? ImagesListCell else {
-                return UITableViewCell()
-            }
-            
-            configCell(for: imageListCell, with: indexPath)
-            return imageListCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
+        
+        guard let imageListCell = cell as? ImagesListCell else {
+            return UITableViewCell()
         }
+        
+        configCell(for: imageListCell, with: indexPath)
+        return imageListCell
+    }
 }
 
 extension ImagesListViewController {
@@ -51,12 +48,12 @@ extension ImagesListViewController {
         guard let image = UIImage(named: photosName[indexPath.row]) else {
             return
         }
-        cell.CellImage.image = image
-        cell.CellDate.text = dateFormatter.string(from: Date())
+        cell.cellImage.image = image
+        cell.cellDate.text = dateFormatter.string(from: Date())
         
         let isLike = indexPath.row % 2 == 0
-        let likeImage = isLike ? UIImage(named: "Like_button_on") : UIImage(named: "Like_button_off")
-        cell.LikeButton.setImage(likeImage, for: .normal)
+        let likeImage = isLike ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+        cell.likeButton.setImage(likeImage, for: .normal)
     }
 }
 
