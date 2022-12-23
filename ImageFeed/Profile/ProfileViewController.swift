@@ -25,10 +25,7 @@ class ProfileViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         imageView.layer.cornerRadius = 35
-        imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
-        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
+
         
         
         //MARK: userLabel
@@ -38,8 +35,7 @@ class ProfileViewController: UIViewController {
         view.addSubview(userLabel)
         userLabel.textColor = UIColor(named: "YP White")
         userLabel.font = UIFont(name: "YSDisplay-Bold", size: 23)
-        userLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8).isActive = true
-        userLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
+
      
         
         //MARK: niknameLabel
@@ -49,8 +45,7 @@ class ProfileViewController: UIViewController {
         view.addSubview(niknameLabel)
         niknameLabel.textColor = UIColor(named: "YP Gray")
         niknameLabel.font = UIFont(name: "YSDisplay-Medium", size: 13)
-        niknameLabel.topAnchor.constraint(equalTo: userLabel.bottomAnchor, constant: 8).isActive = true
-        niknameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
+
        
         
         //MARK: descriptionLabel
@@ -59,8 +54,7 @@ class ProfileViewController: UIViewController {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
         descriptionLabel.textColor = UIColor(named: "YP White")
-        descriptionLabel.topAnchor.constraint(equalTo: niknameLabel.bottomAnchor, constant: 8).isActive = true
-        descriptionLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
+
         
         //MARK: logoutButton
         let logoutButton = UIButton.systemButton(
@@ -70,8 +64,26 @@ class ProfileViewController: UIViewController {
         logoutButton.tintColor = UIColor(named: "YP Red")
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logoutButton)
-        logoutButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
-        logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24).isActive = true
+        
+        
+        NSLayoutConstraint.activate([
+        imageView.widthAnchor.constraint(equalToConstant: 70),
+        imageView.heightAnchor.constraint(equalToConstant: 70),
+        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            
+        userLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
+        userLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+        
+        niknameLabel.topAnchor.constraint(equalTo: userLabel.bottomAnchor, constant: 8),
+        niknameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            
+        descriptionLabel.topAnchor.constraint(equalTo: niknameLabel.bottomAnchor, constant: 8),
+        descriptionLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+       
+        logoutButton.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+        logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24)
+        ])
         
     }
     @objc
