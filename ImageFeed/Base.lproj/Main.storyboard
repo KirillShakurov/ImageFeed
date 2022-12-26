@@ -41,6 +41,7 @@
                     <navigationItem key="navigationItem" id="m2b-k9-9z9"/>
                     <connections>
                         <segue destination="5Wa-yw-gYF" kind="presentation" identifier="ShowAuthIdentifier" modalPresentationStyle="fullScreen" id="NPS-Wl-xjS"/>
+                        <segue destination="EtX-Nb-eR7" kind="presentation" identifier="ShowTable" modalPresentationStyle="fullScreen" id="p0N-Vk-jmO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cGo-xV-WLW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -51,7 +52,6 @@
         <scene sceneID="PDM-SL-yUb">
             <objects>
                 <tabBarController storyboardIdentifier="TabBarViewController" id="EtX-Nb-eR7" customClass="TabBarViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="PLr-Zq-dT7"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6gb-HO-lTu">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -62,8 +62,8 @@
                         </tabBarAppearance>
                     </tabBar>
                     <connections>
-                        <segue destination="Jga-re-6hT" kind="relationship" relationship="viewControllers" id="se7-Qa-QQi"/>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="8GY-ez-w3e"/>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="ihT-8D-QiW"/>
+                        <segue destination="Jga-re-6hT" kind="relationship" relationship="viewControllers" id="9UV-nt-QH0"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a2z-rr-jKZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
