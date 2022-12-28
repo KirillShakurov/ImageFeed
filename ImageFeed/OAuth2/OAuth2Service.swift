@@ -9,18 +9,18 @@ import Foundation
 
 final class OAuth2Service {
     private enum NetworkError: Error {
-      case codeError
+        case codeError
     }
-
+    
     private let jsonDecoder = JSONDecoder()
-
+    
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         
-        var urlComponents = URLComponents(string: TokenURL)!
+        var urlComponents = URLComponents(string: tokenURL)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "client_secret", value: SecretKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "client_id", value: accessKey),
+            URLQueryItem(name: "client_secret", value: secretKey),
+            URLQueryItem(name: "redirect_uri", value: redirectURI),
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
@@ -34,16 +34,16 @@ final class OAuth2Service {
             if let error = error {
                 DispatchQueue.main.async {
                     completion(.failure(error))
-                    return
                 }
+                return
             }
             
             if let response = response as? HTTPURLResponse,
                response.statusCode < 200 || response.statusCode >= 300 {
                 DispatchQueue.main.async {
                     completion(.failure(NetworkError.codeError))
-                    return
                 }
+                return
             }
             
             if let data = data {

@@ -21,10 +21,10 @@ struct OAuthTokenResponseBody: Decodable {
     }
     
     init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.accessToken = try container.decode(String.self, forKey: .accessToken)
-            self.tokenType = try container.decode(String.self, forKey: .tokenType)
-            self.scope = try container.decode(String.self, forKey: .scope)
-            self.createdAt = try container.decode(Int.self, forKey: .createdAt)
-        }
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.accessToken = try container.decode(String.self, forKey: .accessToken)
+        self.tokenType = try container.decode(String.self, forKey: .tokenType)
+        self.scope = try container.decode(String.self, forKey: .scope)
+        self.createdAt = try container.decode(Int.self, forKey: .createdAt)
+    }
 }

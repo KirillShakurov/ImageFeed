@@ -19,7 +19,7 @@ final class SplashViewController: UIViewController {
     }
 
     private func checkAuth() {
-        if (oAuth2TokenStorage.token) != nil {
+        if oAuth2TokenStorage.token != nil {
             switchToTabBarController()
         } else {
             performSegue(withIdentifier: showAuthIdentifier, sender: nil)
@@ -51,11 +51,11 @@ extension SplashViewController {
                 let navigationController = segue.destination as? UINavigationController,
                 let viewController = navigationController.viewControllers[0] as? AuthViewController
             else { fatalError("Failed to prepare for \(showAuthIdentifier)") }
-
+            
             viewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
-           }
+        }
     }
 }
 

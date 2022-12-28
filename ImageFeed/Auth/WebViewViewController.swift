@@ -18,29 +18,29 @@ protocol WebViewViewControllerDelegate: AnyObject {
 final class WebViewViewController: UIViewController {
     
     @IBOutlet private var webView: WKWebView!
-    @IBAction private func didTapBackButton(_ sender: Any?) {
-        delegate?.webViewViewControllerDidCancel(self)
-    }
     @IBOutlet private var progressView: UIProgressView!
     
     weak var delegate: WebViewViewControllerDelegate?
-    private let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+    
+    @IBAction private func didTapBackButton(_ sender: Any?) {
+        delegate?.webViewViewControllerDidCancel(self)
+    }
     
     override func viewDidLoad() {
-            webView.navigationDelegate = self
-            let oauthLink = getOauthLink()
-            let request = URLRequest(url: oauthLink)
-            webView.load(request)
-            updateProgress()
-        }
+        webView.navigationDelegate = self
+        let oauthLink = getOauthLink()
+        let request = URLRequest(url: oauthLink)
+        webView.load(request)
+        updateProgress()
+    }
 
         private func getOauthLink() -> URL {
-            var urlComponents = URLComponents(string: AuthorizeURL)!
+            var urlComponents = URLComponents(string: authorizeURL)!
             urlComponents.queryItems = [
-               URLQueryItem(name: "client_id", value: AccessKey),
-               URLQueryItem(name: "redirect_uri", value: RedirectURI),
+               URLQueryItem(name: "client_id", value: accessKey),
+               URLQueryItem(name: "redirect_uri", value: redirectURI),
                URLQueryItem(name: "response_type", value: "code"),
-               URLQueryItem(name: "scopes", value: AccessScope)
+               URLQueryItem(name: "scopes", value: accessScope)
              ]
             return urlComponents.url!
         }
@@ -87,7 +87,7 @@ final class WebViewViewController: UIViewController {
             if
                 let url = navigationAction.request.url,
                 let urlComponents = URLComponents(string: url.absoluteString),
-                urlComponents.path == NativePath,
+                urlComponents.path == nativePath,
                 let items = urlComponents.queryItems,
                 let codeItem = items.first(where: { $0.name == "code" })
             {
