@@ -7,48 +7,66 @@
 
 import Foundation
 import UIKit
-
-protocol AuthViewControllerDelegate: AnyObject {
-    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
-}
+import ProgressHUD
 
 final class AuthViewController: UIViewController {
-    private let webViewIdentifier = "ShowWebView"
-    private let oAuth2Service = OAuth2Service()
-    private var oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
-    weak var delegate: AuthViewControllerDelegate?
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == webViewIdentifier {
-            guard let webViewViewController = segue.destination as? WebViewViewController
-            else { fatalError("Failed to prepare for \(webViewIdentifier)") }
-
-            webViewViewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
+    private let storyboardInstance = UIStoryboard(name: "Main", bundle: nil)
+    private let showWebViewSegueIdentifier = "ShowWebView"
+    private let storageToken = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
+    
+    private enum NetworkError: Error {
+        case codeError
     }
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == showWebViewSegueIdentifier else { return }
+        guard let webViewViewController = segue.destination as? WebViewViewController else { return }
+        webViewViewController.delegate = self
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        oAuth2Service.fetchOAuthToken(code) { [weak self] result in
-            guard let self = self else {return}
-            
+        guard storageToken.token == nil else { return }
+        UIBlockingProgressHUD.show()
+        OAuth2Service.shared.fetchAuthToken(code: code) { result in
+            DispatchQueue.main.async { [self] in
+                do {
+                    let data = try result.get()
+                    storageToken.token = data
+                    self.fetchProfile(token: storageToken.token!)
+                    UIBlockingProgressHUD.dismiss()
+                } catch let error {
+                    print("Error: ", error)
+                    UIBlockingProgressHUD.dismiss()
+                }
+            }
+        }
+        let tabBarViewController = storyboardInstance.instantiateViewController(withIdentifier: "TabBarViewController")
+        UIApplication.shared.windows.first?.rootViewController = tabBarViewController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
+    }
+    
+    private func fetchProfile(token: String) {
+        profileService.fetchProfile(token) { [weak self] result in
+            guard self != nil else { return }
             switch result {
-                
-            case .success(let token):
-                self.oAuth2TokenStorage.token = token
-                self.delegate?.authViewController(self, didAuthenticateWithCode: code)
-                print("your token: \(token)")
-            case .failure(let error):
-                print(error)
+            case .success:
+                UIBlockingProgressHUD.dismiss()
+            case .failure:
+                UIBlockingProgressHUD.dismiss()
+                print("Error:", NetworkError.codeError)
+                break
             }
         }
     }
-
+    
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        dismiss(animated: true)
+        dismiss(animated: true, completion: nil)
     }
 }
