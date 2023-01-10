@@ -8,57 +8,47 @@
 import Foundation
 
 final class OAuth2Service {
+    static let shared = OAuth2Service()
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
     private enum NetworkError: Error {
         case codeError
     }
     
-    private let jsonDecoder = JSONDecoder()
+    func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        guard lastCode != code else { return }
+        task?.cancel()
+        lastCode = code
+        let request = makeRequest(code: code)
+        let session = urlSession
+        let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            switch result {
+            case .success(let decodedObject):
+                completion(.success(decodedObject.accessToken))
+                self?.task = nil
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        self.task = task
+        task.resume()
+    }
     
-    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        
+    private func makeRequest(code: String) -> URLRequest {
         var urlComponents = URLComponents(string: tokenURL)!
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: accessKey),
             URLQueryItem(name: "client_secret", value: secretKey),
             URLQueryItem(name: "redirect_uri", value: redirectURI),
             URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "grant_type", value: "authorization_code")
+            URLQueryItem(name: "grant_type", value: "authorization_code"),
         ]
-        
         let url = urlComponents.url!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            
-            if let error = error {
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
-                return
-            }
-            
-            if let response = response as? HTTPURLResponse,
-               response.statusCode < 200 || response.statusCode >= 300 {
-                DispatchQueue.main.async {
-                    completion(.failure(NetworkError.codeError))
-                }
-                return
-            }
-            
-            if let data = data {
-                do {
-                    let response = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(response.accessToken))
-                    }
-                } catch let error {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
-                    }
-                }
-            }
-        }
-        task.resume()
+        return request
     }
 }

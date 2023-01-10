@@ -7,56 +7,52 @@
 
 import Foundation
 import UIKit
+import ProgressHUD
 
 final class SplashViewController: UIViewController {
-    private let oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
-
-    private let showAuthIdentifier = "ShowAuthIdentifier"
-
+    private let storyboardInstance = UIStoryboard(name: "Main", bundle: nil)
+    private let storageToken = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
+        
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        checkAuth()
-    }
-
-    private func checkAuth() {
-        if oAuth2TokenStorage.token != nil {
-            switchToTabBarController()
-        } else {
-            performSegue(withIdentifier: showAuthIdentifier, sender: nil)
+        guard storageToken.token != nil else {
+            showNextScreen(withID: "AuthViewController")
+            return
         }
+        fetchProfile(token: storageToken.token!)
     }
-
-    private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
-        window.rootViewController = tabBarController
+    
+    private func showNextScreen(withID screenID: String) {
+        let nextViewController = storyboardInstance.instantiateViewController(withIdentifier: screenID)
+        UIApplication.shared.windows.first?.rootViewController = nextViewController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
     }
-}
-
-
-// MARK: - AuthViewControllerDelegate
-extension SplashViewController: AuthViewControllerDelegate {
-    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        switchToTabBarController()
-    }
-}
-
-// MARK: - Segue
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showAuthIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(showAuthIdentifier)") }
+    
+    private func fetchProfile(token: String) {
+        profileService.fetchProfile(token) { [weak self] result in
+            DispatchQueue.main.async { [self] in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    self.profileImageService.fetchProfileImageURL(username: (self.profileService.profile?.username)!) { _ in
+                    }
+                    self.showNextScreen(withID: "TabBarViewController")
+                case .failure:
+                    let alert = UIAlertController(
+                        title: "Что-то пошло не так",
+                        message: "Не удалось войти в систему. Проверьте ваше интернет соединение",
+                        preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
+                        self.showNextScreen(withID: "SplashViewController")
+                    }
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
             
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
     }
 }
-
 

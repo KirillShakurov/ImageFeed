@@ -6,24 +6,42 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
-protocol OAuth2TokenStorageProtocol {
-    var token: String? { get set }
-}
-
-final class OAuth2TokenStorage: OAuth2TokenStorageProtocol {
+final class OAuth2TokenStorage {
+    private let storage = UserDefaults.standard
+    private let keychainStorage = KeychainWrapper.standard
+    
     private enum Keys: String {
         case bearerToken
     }
-
-    private let userDefaults = UserDefaults.standard
-
+    
     var token: String? {
-      get {
-        return userDefaults.string(forKey: Keys.bearerToken.rawValue)
-      }
-      set {
-        userDefaults.set(newValue, forKey: Keys.bearerToken.rawValue)
-      }
+        get {
+            loadKeychainWrapper(for: .bearerToken, as: String.self)
+        }
+        set {
+            saveKeychainWrapper(value: newValue, at: .bearerToken)
+        }
+    }
+    
+    private func loadKeychainWrapper<T: Codable>(for key: Keys, as dataType: T.Type) -> T? {
+        guard let data = keychainStorage.data(forKey: key.rawValue),
+              let count = try? JSONDecoder().decode(dataType.self, from: data) else {
+            return nil
+        }
+        return count
+    }
+    
+    private func saveKeychainWrapper<T: Codable>(value: T, at key: Keys) {
+        guard let data = try? JSONEncoder().encode(value) else {
+            print("Failed save data to KeychainWrapper")
+            return
+        }
+        let isSuccess = keychainStorage.set(data, forKey: key.rawValue)
+        guard isSuccess else {
+            print("Failed save data to KeychainWrapper")
+            return
+        }
     }
 }
