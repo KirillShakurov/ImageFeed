@@ -14,7 +14,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "userpick"))
-        imageView.tag = 1
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -76,7 +75,6 @@ final class ProfileViewController: UIViewController {
         let profileImageView = UIImageView(image: profileImage)
         profileImageView.tintColor = UIColor(named: "YP Gray")
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.tag = 1
         view.addSubview(profileImageView)
         self.avatarImageView = profileImageView
         
@@ -143,8 +141,7 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc func didTapLogoutButton(_ sender: UIButton) {
-        let viewImage = view.viewWithTag(1) as! UIImageView
-        viewImage.image = UIImage(systemName: "person.crop.circle.fill")
+        avatarImageView.image = UIImage(systemName: "person.crop.circle.fill")
         nameLabel?.removeFromSuperview()
         nameLabel = nil
         loginLabel?.removeFromSuperview()

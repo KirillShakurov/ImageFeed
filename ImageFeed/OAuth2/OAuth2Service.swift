@@ -28,10 +28,10 @@ final class OAuth2Service {
             switch result {
             case .success(let decodedObject):
                 completion(.success(decodedObject.accessToken))
-                self?.task = nil
             case .failure(let error):
                 completion(.failure(error))
             }
+            self?.task = nil
         }
         self.task = task
         task.resume()

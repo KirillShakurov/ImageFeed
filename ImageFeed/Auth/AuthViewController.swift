@@ -36,20 +36,19 @@ extension AuthViewController: WebViewViewControllerDelegate {
         UIBlockingProgressHUD.show()
         OAuth2Service.shared.fetchAuthToken(code: code) { result in
             DispatchQueue.main.async { [self] in
-                do {
-                    let data = try result.get()
+                switch result {
+                case .success(let data):
                     storageToken.token = data
                     self.fetchProfile(token: storageToken.token!)
-                    UIBlockingProgressHUD.dismiss()
-                } catch let error {
-                    print("Error: ", error)
-                    UIBlockingProgressHUD.dismiss()
+                case .failure(let error):
+                    print("Error:", error)
                 }
+                UIBlockingProgressHUD.dismiss()
+                let tabBarViewController = storyboardInstance.instantiateViewController(withIdentifier: "TabBarViewController")
+                UIApplication.shared.windows.first?.rootViewController = tabBarViewController
+                UIApplication.shared.windows.first?.makeKeyAndVisible()
             }
         }
-        let tabBarViewController = storyboardInstance.instantiateViewController(withIdentifier: "TabBarViewController")
-        UIApplication.shared.windows.first?.rootViewController = tabBarViewController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
     }
     
     private func fetchProfile(token: String) {
@@ -61,7 +60,6 @@ extension AuthViewController: WebViewViewControllerDelegate {
             case .failure:
                 UIBlockingProgressHUD.dismiss()
                 print("Error:", NetworkError.codeError)
-                break
             }
         }
     }

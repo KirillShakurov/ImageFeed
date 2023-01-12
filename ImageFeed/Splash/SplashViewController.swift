@@ -36,15 +36,16 @@ final class SplashViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success:
-                    self.profileImageService.fetchProfileImageURL(username: (self.profileService.profile?.username)!) { _ in
+                    guard let username = self.profileService.profile?.username else { return }
+                    self.profileImageService.fetchProfileImageURL(username: username) { _ in
                     }
                     self.showNextScreen(withID: "TabBarViewController")
                 case .failure:
                     let alert = UIAlertController(
-                        title: "Что-то пошло не так",
-                        message: "Не удалось войти в систему. Проверьте ваше интернет соединение",
+                        title: "Что-то пошло не так(",
+                        message: "Не удалось войти в систему",
                         preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
+                    let okAction = UIAlertAction(title: "Ок", style: .default) { _ in
                         self.showNextScreen(withID: "SplashViewController")
                     }
                     alert.addAction(okAction)
