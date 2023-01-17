@@ -28,7 +28,7 @@ final class ProfileViewController: UIViewController {
         createProfileImageAndLogin()
         createProfileDescription()
         exitButton()
-        updateProfileDetails(profile: profileService.profile!)
+        updateProfileDetails(profile: profileService.profile)
         
         profileImageServiceObserver = NotificationCenter.default.addObserver(
                 forName: ProfileImageService.DidChangeNotification,
@@ -148,5 +148,14 @@ final class ProfileViewController: UIViewController {
         loginLabel = nil
         descriptionLabel?.removeFromSuperview()
         descriptionLabel = nil
+    }
+}
+extension ProfileViewController {
+
+    private func updateProfileDetails(profile: Profile?) {
+        guard let profile = profile else { return }
+        loginLabel.text = profile.loginName
+        nameLabel.text = profile.name
+        descriptionLabel.text = profile.bio
     }
 }

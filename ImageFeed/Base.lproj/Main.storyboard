@@ -41,7 +41,6 @@
                     <navigationItem key="navigationItem" id="m2b-k9-9z9"/>
                     <connections>
                         <segue destination="5Wa-yw-gYF" kind="presentation" identifier="ShowAuthIdentifier" modalPresentationStyle="fullScreen" id="NPS-Wl-xjS"/>
-                        <segue destination="EtX-Nb-eR7" kind="presentation" identifier="ShowTable" modalPresentationStyle="fullScreen" id="p0N-Vk-jmO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cGo-xV-WLW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
