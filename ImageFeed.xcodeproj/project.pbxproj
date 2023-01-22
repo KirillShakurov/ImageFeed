@@ -19,6 +19,7 @@
 		02883C7E29277808007B6AD1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02883C7C29277808007B6AD1 /* LaunchScreen.storyboard */; };
 		02A76C4B29772ABB0087B9C5 /* ErrorAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A76C4A29772ABB0087B9C5 /* ErrorAlertController.swift */; };
 		02B2B0CB294B96030000E6F8 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2B0CA294B96030000E6F8 /* WebViewViewController.swift */; };
+		02C32EBF297B1C520085A816 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C32EBE297B1C520085A816 /* TabBarController.swift */; };
 		02D2AB54296C849200F20968 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2AB53296C849200F20968 /* Kingfisher */; };
 		02D2AB57296C8A0A00F20968 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 02D2AB56296C8A0A00F20968 /* SwiftKeychainWrapper */; };
 		02D5D112294B860A0072861A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D5D111294B860A0072861A /* Constants.swift */; };
@@ -48,6 +49,7 @@
 		02883C7F29277808007B6AD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		02A76C4A29772ABB0087B9C5 /* ErrorAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertController.swift; sourceTree = "<group>"; };
 		02B2B0CA294B96030000E6F8 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
+		02C32EBE297B1C520085A816 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		02D5D111294B860A0072861A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		02D5D113294B939A0072861A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		02EF8A102969E56700AB04A2 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				02883C7C29277808007B6AD1 /* LaunchScreen.storyboard */,
 				02883C7F29277808007B6AD1 /* Info.plist */,
 				02D5D111294B860A0072861A /* Constants.swift */,
+				02C32EBE297B1C520085A816 /* TabBarController.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				02F141DB2950D98300C77D6A /* OAuth2TokenStorage.swift in Sources */,
 				02D5D114294B939A0072861A /* AuthViewController.swift in Sources */,
 				02D5D112294B860A0072861A /* Constants.swift in Sources */,
+				02C32EBF297B1C520085A816 /* TabBarController.swift in Sources */,
 				02EF8A152969E60900AB04A2 /* ProfileImageService.swift in Sources */,
 				02A76C4B29772ABB0087B9C5 /* ErrorAlertController.swift in Sources */,
 				024AC9CF2939283A00F29DC2 /* SingleImageViewController.swift in Sources */,

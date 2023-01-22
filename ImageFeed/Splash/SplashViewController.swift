@@ -16,26 +16,53 @@ final class SplashViewController: UIViewController {
     private let errorAlertController = ErrorAlertViewController()
 
     private let showAuthIdentifier = "ShowAuthIdentifier"
+    
+    private var splashImageView: UIImageView!
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "YP Black")
+        createImageSplash()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         checkAuth()
     }
 
+    private func createImageSplash() {
+        let splashImage = UIImage(named: "Vector")
+        let splashImageView = UIImageView(image: splashImage)
+        splashImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(splashImageView)
+        self.splashImageView = splashImageView
+        
+        NSLayoutConstraint.activate([
+            splashImageView.widthAnchor.constraint(equalToConstant: 75),
+            splashImageView.heightAnchor.constraint(equalToConstant: 77.68),
+            splashImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            splashImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            
+        ])
+    }
 
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
 
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
+            .instantiateViewController(withIdentifier: "TabBarController")
         window.rootViewController = tabBarController
     }
 
     private func checkAuth() {
         if let token = oAuth2TokenStorage.token {
+            UIBlockingProgressHUD.show()
             fetchProfile(token: token)
         } else {
-            performSegue(withIdentifier: showAuthIdentifier, sender: nil)
+            let authViewController = AuthViewController()
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true)
         }
     }
 }
