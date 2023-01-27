@@ -8,47 +8,45 @@
 import Foundation
 
 final class OAuth2Service {
-    static let shared = OAuth2Service()
-    private let urlSession = URLSession.shared
-    private var task: URLSessionTask?
     private var lastCode: String?
-    
-    private enum NetworkError: Error {
-        case codeError
-    }
-    
-    func fetchAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+    private var task: URLSessionTask?
+    private let networkClient = NetworkRouting()
+
+    func fetchAuthToken(_ code: String, handler: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
-        guard lastCode != code else { return }
+        guard lastCode != code, let request = buildRequest(code: code)  else { return }
+
         task?.cancel()
         lastCode = code
-        let request = makeRequest(code: code)
-        let session = urlSession
-        let task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
-            switch result {
-            case .success(let decodedObject):
-                completion(.success(decodedObject.accessToken))
+
+        task = networkClient.fetch(requestType: .urlRequest(urlRequest: request), withToken: false) {[weak self] (response: Result<OAuthTokenResponseBody, Error>) in
+            guard let self = self else {return}
+            self.task = nil
+
+            switch response {
+            case .success(let data):
+                    handler(.success(data.accessToken))
             case .failure(let error):
-                completion(.failure(error))
+                    self.lastCode = nil
+                    handler(.failure(error))
             }
-            self?.task = nil
         }
-        self.task = task
-        task.resume()
     }
-    
-    private func makeRequest(code: String) -> URLRequest {
-        var urlComponents = URLComponents(string: tokenURL)!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: accessKey),
-            URLQueryItem(name: "client_secret", value: secretKey),
-            URLQueryItem(name: "redirect_uri", value: redirectURI),
-            URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "grant_type", value: "authorization_code"),
-        ]
-        let url = urlComponents.url!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        return request
+
+    private func buildRequest(code: String) -> URLRequest? {
+        if var urlComponents = URLComponents(string: tokenURL) {
+            urlComponents.queryItems = [
+               URLQueryItem(name: "client_id", value: accessKey),
+               URLQueryItem(name: "redirect_uri", value: redirectURI),
+               URLQueryItem(name: "code", value: code),
+               URLQueryItem(name: "client_secret", value: secretKey),
+               URLQueryItem(name: "grant_type", value: "authorization_code")
+             ]
+            var request = URLRequest(url: urlComponents.url!)
+            request.httpMethod = "POST"
+
+            return request
+        }
+        return nil
     }
 }

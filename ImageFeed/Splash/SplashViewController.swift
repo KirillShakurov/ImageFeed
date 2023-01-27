@@ -10,9 +10,10 @@ import UIKit
 final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private var isAuthorized: Bool = false
 
     private let oAuth2Service = OAuth2Service()
-    private var oAuth2TokenStorage = OAuth2TokenStorage()
+    private var oAuth2TokenStorage: OAuth2TokenStorageProtocol = OAuth2TokenStorage()
     private let errorAlertController = ErrorAlertViewController()
 
     private let showAuthIdentifier = "ShowAuthIdentifier"
@@ -50,16 +51,25 @@ final class SplashViewController: UIViewController {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
 
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarController")
+            .instantiateViewController(withIdentifier: "TabBarViewController")
         window.rootViewController = tabBarController
     }
 
     private func checkAuth() {
-        if let token = oAuth2TokenStorage.token {
+        guard isAuthorized == false else  {
+            return
+        }
+
+        if oAuth2TokenStorage.token != nil {
             UIBlockingProgressHUD.show()
-            fetchProfile(token: token)
+            fetchProfile()
         } else {
-            let authViewController = AuthViewController()
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            guard let authViewController = storyboard.instantiateViewController(
+                withIdentifier: "AuthViewController"
+            ) as? AuthViewController else {
+                return
+            }
             authViewController.delegate = self
             authViewController.modalPresentationStyle = .fullScreen
             present(authViewController, animated: true)
@@ -67,8 +77,10 @@ final class SplashViewController: UIViewController {
     }
 }
 
+// MARK: - AuthViewControllerDelegate
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        isAuthorized = true
         dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
             UIBlockingProgressHUD.show()
@@ -77,12 +89,12 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 
     private func fetchOAuthToken(_ code: String) {
-        oAuth2Service.fetchAuthToken(code: code) { [weak self] result in
+        oAuth2Service.fetchAuthToken(code) {  [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let token):
                     self.oAuth2TokenStorage.token = token
-                    self.fetchProfile(token: token)
+                    self.fetchProfile()
             case .failure:
                     UIBlockingProgressHUD.dismiss()
                     self.showError()
@@ -90,17 +102,15 @@ extension SplashViewController: AuthViewControllerDelegate {
         }
     }
 
-    private func fetchProfile(token: String) {
-        profileService.fetchProfile(token) { [weak self] result in
+    private func fetchProfile() {
+        profileService.fetchProfile { [weak self] result in
             guard let self = self else { return }
             switch result {
-                case .success:
-                guard let username = self.profileService.profile?.username else { return }
-                self.profileImageService.fetchProfileImageURL(username: username) { _ in
-                }
-                DispatchQueue.main.async {
-                    self.switchToTabBarController()
-                }
+                case .success(let username):
+                    ProfileImageService.shared.fetchProfileImageURL(username: username) { _ in }
+                    DispatchQueue.main.async {
+                        self.switchToTabBarController()
+                    }
                 case .failure:
                     self.showError()
                     break
@@ -110,6 +120,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 }
 
+// MARK: - Segue
 extension SplashViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showAuthIdentifier {
@@ -124,6 +135,7 @@ extension SplashViewController {
            }
     }
 }
+
 
 extension SplashViewController {
     private func showError() {
