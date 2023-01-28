@@ -87,16 +87,21 @@ extension ImagesListViewController {
                 let indexPaths = (oldCount..<newCount).map { i in
                     IndexPath(row: i, section: 0)
                 }
-                tableView.insertRows(at: indexPaths, with: .bottom)
+                tableView.insertRows(at: indexPaths, with: .automatic)
             } completion: { _ in }
         }
     }
-
 }
 
 
 // MARK: - ImagesListCellDelegate
 extension ImagesListViewController: ImagesListCellDelegate {
+    func reloadView(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        _ = photos[indexPath.row]
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
 
@@ -120,5 +125,9 @@ extension ImagesListViewController: ImagesListCellDelegate {
             UIBlockingProgressHUD.dismiss()
         }
     }
+    
+
 }
+
+
 
