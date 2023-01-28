@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 final class ImageListService {
-    static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange");
+    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange");
     static let shared = ImageListService()
 
     private (set) var photos: [Photo] = []
@@ -82,7 +82,7 @@ extension ImageListService {
 
         NotificationCenter.default
             .post(
-                name: ImageListService.DidChangeNotification,
+                name: ImageListService.didChangeNotification,
                 object: self
             )
     }

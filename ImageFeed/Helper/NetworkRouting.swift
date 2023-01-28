@@ -25,7 +25,7 @@ final class NetworkRouting: NetworkClient {
         case emptyData
         case parsingError
 
-         public var errorDescription: String? {
+          var errorDescription: String? {
              switch self {
              case .codeError:
                      return NSLocalizedString("Backend returned non 200 code.", comment: "NetworkClient")

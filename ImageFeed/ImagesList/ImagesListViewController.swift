@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
     private let singleViewIdentifier = "ShowSingleImageView"
     private let imageListService = ImageListService.shared
     private var imageListServiceObserver: NSObjectProtocol?
@@ -69,7 +69,7 @@ extension ImagesListViewController {
     private func observeImagesLoad() {
         imageListServiceObserver = NotificationCenter.default
                     .addObserver(
-                        forName: ImageListService.DidChangeNotification,
+                        forName: ImageListService.didChangeNotification,
                         object: nil,
                         queue: .main
                     ) { [weak self] _ in
