@@ -7,19 +7,26 @@
 
 import UIKit
 
+public protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListPresenterProtocol { get set }
+    func updateTableViewAnimated()
+}
+
 final class ImagesListViewController: UIViewController {
     private let singleViewIdentifier = "ShowSingleImageView"
     private let imageListService = ImageListService.shared
     private var imageListServiceObserver: NSObjectProtocol?
     private var photos: [Photo] = []
+    lazy var presenter: ImagesListPresenterProtocol = {
+        return ImagesListPresenter()
+    } ()
 
     @IBOutlet private var tableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        observeImagesLoad()
-        imageListService.fetchPhotosNextPage()
-
+        presenter.view = self
+        presenter.viewDidLoad()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -31,9 +38,25 @@ final class ImagesListViewController: UIViewController {
             super.prepare(for: segue, sender: sender)
         }
     }
+    
+    
+    
+    func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = imageListService.photos.count
+        photos = imageListService.photos
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
+                }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
+        }
+    }
 }
 
-extension ImagesListViewController: UITableViewDataSource {
+extension ImagesListViewController: UITableViewDataSource, ImagesListViewControllerProtocol {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photos.count
     }
@@ -61,35 +84,6 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: singleViewIdentifier, sender: indexPath)
-    }
-}
-
-// MARK: - Udate rows at TableView
-extension ImagesListViewController {
-    private func observeImagesLoad() {
-        imageListServiceObserver = NotificationCenter.default
-                    .addObserver(
-                        forName: ImageListService.didChangeNotification,
-                        object: nil,
-                        queue: .main
-                    ) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.updateTableViewAnimated()
-                    }
-    }
-
-    func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imageListService.photos.count
-        photos = imageListService.photos
-        if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
-        }
     }
 }
 
@@ -126,7 +120,6 @@ extension ImagesListViewController: ImagesListCellDelegate {
         }
     }
     
-
 }
 
 
