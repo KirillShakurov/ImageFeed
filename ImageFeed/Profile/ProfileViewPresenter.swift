@@ -5,7 +5,6 @@
 //  Created by Kirill on 13.02.2023.
 //
 import UIKit
-import Foundation
 
 public protocol ProfileViewPresenterProtocol {
     var view: ProfileViewControllerProtocol? {get set}

@@ -7,9 +7,8 @@
 
 import Foundation
 
-
-class AuthHelper: AuthHelperProtocol {
-    let configuration: AuthConfiguration
+final class AuthHelper: AuthHelperProtocol {
+    private let configuration: AuthConfiguration
     
     init(configuration: AuthConfiguration = .standard) {
         self.configuration = configuration
@@ -38,8 +37,7 @@ class AuthHelper: AuthHelperProtocol {
            let codeItem = items.first(where: { $0.name == "code" })
         {
             return codeItem.value
-        } else {
-            return nil
         }
-    } 
+        return nil
+    }
 }

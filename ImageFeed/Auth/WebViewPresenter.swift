@@ -19,11 +19,11 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     weak var view: WebViewViewControllerProtocol?
     func viewDidLoad() {
         let request = authHelper.authRequest()
-                view?.load(request: request)
-                didUpdateProgressValue(0)
-        }
+        view?.load(request: request)
+        didUpdateProgressValue(0)
+    }
     
-    var authHelper: AuthHelperProtocol
+    private var authHelper: AuthHelperProtocol
     
     init(authHelper: AuthHelperProtocol) {
         self.authHelper = authHelper

@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol ImagesListViewControllerProtocol: AnyObject {
+protocol ImagesListViewControllerProtocol: AnyObject {
     var presenter: ImagesListPresenterProtocol { get set }
     func updateTableViewAnimated()
 }
@@ -21,7 +21,7 @@ final class ImagesListViewController: UIViewController {
         return ImagesListPresenter()
     } ()
 
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()

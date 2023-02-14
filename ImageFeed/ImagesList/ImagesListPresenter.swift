@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol ImagesListPresenterProtocol {
+protocol ImagesListPresenterProtocol {
     var view: ImagesListViewControllerProtocol? { get set }
     func viewDidLoad()
 }
@@ -20,17 +20,17 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
     
     func viewDidLoad() {
 
-            imageListServiceObserver = NotificationCenter.default
-                        .addObserver(
-                            forName: ImageListService.didChangeNotification,
-                            object: nil,
-                            queue: .main
-                        ) { [weak self] _ in
-                            guard let self = self else { return }
-                            self.view?.updateTableViewAnimated()
-                        }
+        imageListServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ImageListService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.view?.updateTableViewAnimated()
+            }
         imageListService.fetchPhotosNextPage()
-        }
+    }
 }
 
 

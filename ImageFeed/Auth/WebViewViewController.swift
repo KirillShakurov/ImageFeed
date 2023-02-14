@@ -21,7 +21,7 @@ public protocol WebViewViewControllerProtocol: AnyObject {
     func setProgressHidden(_ isHidden: Bool)
 }
 
-final class WebViewViewController: UIViewController & WebViewViewControllerProtocol {
+final class WebViewViewController: UIViewController, WebViewViewControllerProtocol {
     @IBOutlet private weak var webView: WKWebView!
     @IBOutlet private weak var progressView: UIProgressView!
     private var estimatedProgressObservation: NSKeyValueObservation?
